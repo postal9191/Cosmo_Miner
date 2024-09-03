@@ -7,13 +7,6 @@ def get_Token():
     # Загрузка данных из файла config.json
     with open('config.json', 'r', encoding='utf-8') as config_file:
         config_data = json.load(config_file)
-    #
-    # # Шаг 2: Обновить значение 'auth_date' на текущее время в формате UNIX timestamp
-    # config_data['auth_date'] = str(int(time.time()))
-    #
-    # # # Шаг 3: Записать обновлённые данные обратно в файл
-    # with open('config.json', 'w', encoding='utf-8') as config_file:
-    #     json.dump(config_data, config_file, ensure_ascii=False, indent=4)
 
     url = "https://api.cosmo-miner.com/user/auth"
 
@@ -147,6 +140,7 @@ def main_loop():
             else:
                 timeStartGame = datetime.fromisoformat(time_str.replace('Z', '+00:00'))
                 time_end = timeStartGame + timedelta(hours=8, minutes=2)
+                print(f"Ждем до {time_end} по UTC")
                 current_time_utc = datetime.now(timezone.utc)
 
                 # Вычисляем оставшееся время до выполнения claim
