@@ -90,6 +90,10 @@ def spinRun():
         if todaySpinsCount < maxSpins:
             print('Осталось спинов на сегодня', maxSpins - todaySpinsCount, )
             spins_to_perform = freeSpins + adCombo
+            if spins_to_perform == 0:
+                print("Нет доступных спинов. Ожидание 30 минут перед перезапуском цикла.")
+                time.sleep(1800)  # 1800 секунд = 30 минут
+                continue
             print(f"Будем выполнять spin {spins_to_perform} раза с задержкой в 10 секунд")
             for _ in range(spins_to_perform):
                 spin(token)
