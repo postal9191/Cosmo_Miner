@@ -9,7 +9,7 @@ def get_Token():
     url = "https://api.cosmo-miner.com/user/auth"
 
     payload = json.dumps(config_data)
-    print(payload)
+    # print(payload)
     headers = {
         'accept': '*/*',
         'accept-language': 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7',

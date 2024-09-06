@@ -30,7 +30,7 @@ def get_info_spin(get_Token):
     }
 
     response = requests.request("GET", url, headers=headers, data=payload).json()
-    print(response)
+    # print(response) #debug
     return response
 
 
@@ -62,7 +62,7 @@ def spin(get_Token):
 
     response = requests.request("POST", url, headers=headers, data=payload)
 
-    print(response.text)
+    print(response.json()['message'])
 
 
 def spinRun():
@@ -83,7 +83,7 @@ def spinRun():
 
         # Проверяем, прошло ли больше 10 минут с последнего спина
         if wait_time > 0:
-            print(f"Ждем {wait_time} секунд")
+            print(f"Ждем {wait_time} секунд чтобы крутить спины снова")
             time.sleep(wait_time)
 
         # После ожидания проверяем количество оставшихся спинов
@@ -102,7 +102,7 @@ def spinRun():
             # Если сегодня уже потрачено максимальное количество спинов, ждем следующего дня
             next_day = (current_time + timedelta(days=1)).replace(hour=0, minute=5, second=0, microsecond=0)
             wait_time = (next_day - current_time).total_seconds()
-            print(f"Ждем до следующего дня: {wait_time} секунд")
+            print(f"Ждем до следующего дня: {wait_time} секунд для вращения спинов")
             time.sleep(wait_time)
 
 

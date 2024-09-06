@@ -32,7 +32,7 @@ def start(token):
 
     response = requests.request("POST", url, headers=headers, data=payload)
 
-    print(response.text)
+    # print(response.text)
 
 
 def claim(token):
@@ -61,7 +61,7 @@ def claim(token):
     }
 
     response = requests.request("GET", url, headers=headers, data=payload)
-    print(response.text)
+    # print(response.text)
 
 
 def get_info_farm(token):
@@ -125,16 +125,16 @@ def get_info_spin():
     adCombo = response.get('adCombo')
     lastSpinDate = response.get('lastSpinDate')
 
-    print(response.text)
+    # print(response.text)
 
 
 def main_loop():
     while True:
         try:
             token = tokenFefresh.get_Token()
-            print(token)
+            # print(token)
             time_str = get_info_farm(token)
-            print(time_str)
+            # print(time_str)
             if time_str is None or time_str.strip() == '':
                 print("Запускаем Старт")
                 # Если время None или пустое (с учетом возможных пробелов), запускаем старт
@@ -142,7 +142,7 @@ def main_loop():
             else:
                 timeStartGame = datetime.fromisoformat(time_str.replace('Z', '+00:00'))
                 time_end = timeStartGame + timedelta(hours=8, minutes=2)
-                print(f"Ждем до {time_end} по UTC")
+                print(f"Ждем до {time_end} по UTC для клейма")
                 current_time_utc = datetime.now(timezone.utc)
 
                 # Вычисляем оставшееся время до выполнения claim
@@ -152,7 +152,7 @@ def main_loop():
                     claim(token)
                 else:
                     # Ждем оставшееся время
-                    print(f"Ожидание {time_sleep_sec} секунд")
+                    # print(f"Ожидание {time_sleep_sec} секунд")
                     time.sleep(time_sleep_sec)
 
         except Exception as e:
