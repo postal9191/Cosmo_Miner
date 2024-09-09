@@ -61,8 +61,19 @@ def spin(get_Token):
     }
 
     response = requests.request("POST", url, headers=headers, data=payload)
+    print(response.text)
 
-    print(response.json()['message'])
+    if response.text:  # Проверяем, что ответ не пустой
+        try:
+            prize = response.json().get('prize')
+            if prize is not None:  # Проверяем, что значение 'prize' не None
+                print(prize)
+            else:
+                print("Что-то пошло не так: значение 'prize' отсутствует.")
+        except requests.exceptions.JSONDecodeError:
+            print("Ошибка декодирования JSON: неверный формат ответа.")
+    else:
+        print("Что-то пошло не так: ответ пустой.")
 
 
 def spinRun():
