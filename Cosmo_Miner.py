@@ -3,6 +3,7 @@ from datetime import datetime, timedelta, timezone
 
 import requests
 import tokenFefresh
+import buyPlane
 
 def start(token):
     url = "https://api.cosmo-miner.com/user/farm/start"
@@ -60,9 +61,10 @@ def claim(token):
         'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36'
     }
 
-    response = requests.request("GET", url, headers=headers, data=payload)
-    # print(response.text)
+    response = requests.request("GET", url, headers=headers, data=payload).json()
+    # print(response)
 
+    return response['user']['coins']
 
 def get_info_farm(token):
     url = "https://api.cosmo-miner.com/user/income"
@@ -92,42 +94,6 @@ def get_info_farm(token):
     response = requests.request("GET", url, headers=headers, data=payload).json()
     return response.get("lastFarmStart")
 
-
-def get_info_spin():
-    url = "https://api.cosmo-miner.com/spin"
-
-    payload = {}
-    headers = {
-        'accept': '*/*',
-        'accept-language': 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7',
-        'authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmQyZTczMzQxMmI5NjljM2I1Mjc1YjUiLCJ1c2VybmFtZSI6IlBvc3RhbDkxOTEiLCJpYXQiOjE3MjUzNzIzMDYsImV4cCI6MTcyNTM3NTkwNn0.Wxk0vywV1kvvPxYo_7_CACgpwSEh322sHhauzTiR7qE',
-        'cache-control': 'no-cache',
-        'content-type': 'application/json',
-        'dnt': '1',
-        'ngrok-skip-browser-warning': 'true',
-        'origin': 'https://cosmo-miner.com',
-        'pragma': 'no-cache',
-        'priority': 'u=1, i',
-        'referer': 'https://cosmo-miner.com/',
-        'sec-ch-ua': '"Chromium";v="128", "Not;A=Brand";v="24", "Google Chrome";v="128"',
-        'sec-ch-ua-mobile': '?0',
-        'sec-ch-ua-platform': '"Windows"',
-        'sec-fetch-dest': 'empty',
-        'sec-fetch-mode': 'cors',
-        'sec-fetch-site': 'same-site',
-        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36'
-    }
-
-    response = requests.request("GET", url, headers=headers, data=payload).json()
-    freeSpins = response.get('freeSpins')
-    maxSpins = response.get('maxSpins')
-    todaySpinsCount = response.get('todaySpinsCount')
-    adCombo = response.get('adCombo')
-    lastSpinDate = response.get('lastSpinDate')
-
-    # print(response.text)
-
-
 def main_loop():
     while True:
         try:
@@ -149,7 +115,9 @@ def main_loop():
                 time_sleep_sec = int((time_end - current_time_utc).total_seconds())
                 if time_sleep_sec <= 0:
                     print("Запускаем клейм")
-                    claim(token)
+                    coins = claim(token)
+                #     Покупаем самолеты на все бабки
+                    buyPlane.buyMultiplePlanes(coins)
                 else:
                     # Ждем оставшееся время
                     # print(f"Ожидание {time_sleep_sec} секунд")

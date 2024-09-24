@@ -61,7 +61,7 @@ def spin(get_Token):
     }
 
     response = requests.request("POST", url, headers=headers, data=payload)
-    print(response.text)
+    # print(response.text)
 
     if response.text:  # Проверяем, что ответ не пустой
         try:
@@ -74,6 +74,31 @@ def spin(get_Token):
             print("Ошибка декодирования JSON: неверный формат ответа.")
     else:
         print("Что-то пошло не так: ответ пустой.")
+
+def reklama():
+
+    url = "https://api.adsgram.ai/adv?blockId=306&tg_id=124&tg_platform=tdesktop&platform=Win32&language=ru&is_premium=true" # тут tg_id заменить на свой
+
+    payload = {}
+    headers = {
+        'Accept': '*/*',
+        'Accept-Language': 'ru,en;q=0.9,en-GB;q=0.8,en-US;q=0.7',
+        'Cache-Control': 'max-age=0',
+        'Connection': 'keep-alive',
+        'Origin': 'https://cosmo-miner.com',
+        'Referer': 'https://cosmo-miner.com/',
+        'Sec-Fetch-Dest': 'empty',
+        'Sec-Fetch-Mode': 'cors',
+        'Sec-Fetch-Site': 'cross-site',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36 Edg/128.0.0.0',
+        'sec-ch-ua': '"Chromium";v="128", "Not;A=Brand";v="24", "Microsoft Edge";v="128", "Microsoft Edge WebView2";v="128"',
+        'sec-ch-ua-mobile': '?0',
+        'sec-ch-ua-platform': '"Windows"'
+    }
+
+    response = requests.request("GET", url, headers=headers, data=payload)
+
+    # print(response.text)
 
 
 def spinRun():
@@ -99,7 +124,9 @@ def spinRun():
 
         # После ожидания проверяем количество оставшихся спинов
         if todaySpinsCount < maxSpins:
-            print('Осталось спинов на сегодня', maxSpins - todaySpinsCount, )
+            reklama() # тест автопроталкивание рекламы
+
+            print('Суточный лимит спинов осталось ', maxSpins - todaySpinsCount, )
             spins_to_perform = freeSpins + adCombo
             if spins_to_perform == 0:
                 print("Нет доступных спинов. Ожидание 30 минут перед перезапуском цикла.")
