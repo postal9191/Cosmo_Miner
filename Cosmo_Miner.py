@@ -117,7 +117,7 @@ def main_loop():
                     print("Запускаем клейм")
                     coins = claim(token)
                 #     Покупаем самолеты на все бабки
-                    buyPlane.buyMultiplePlanes(coins)
+                    buyPlane.buyMultiplePlanes(coins, token)
                 else:
                     # Ждем оставшееся время
                     # print(f"Ожидание {time_sleep_sec} секунд")

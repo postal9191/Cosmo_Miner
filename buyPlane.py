@@ -2,11 +2,9 @@ import time
 
 import requests
 import json
-import tokenFefresh
 
-token = tokenFefresh.get_Token()
 
-def buyPlane50k():
+def buyPlane50k(token):
 
     url = "https://api.cosmo-miner.com/user/buy/card"
 
@@ -35,7 +33,7 @@ def buyPlane50k():
 
     print(response.text)
 
-def buyMultiplePlanes(current_coins):
+def buyMultiplePlanes(current_coins, token):
     # Проверяем, что текущие монеты положительные
     print(f'Количество монет {current_coins}')
 
@@ -48,5 +46,5 @@ def buyMultiplePlanes(current_coins):
     print(f'Купим {number_of_planes} кораблей')
     # Запускаем функцию buyPlane50k нужное количество раз
     for _ in range(number_of_planes):
-        buyPlane50k()
+        buyPlane50k(token)
         time.sleep(10)
