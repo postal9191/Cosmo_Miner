@@ -4,6 +4,23 @@ from datetime import datetime, timedelta, timezone
 import requests
 import tokenFefresh
 
+headersReklama = {
+        'Accept': '*/*',
+        'Accept-Language': 'ru,en;q=0.9,en-GB;q=0.8,en-US;q=0.7',
+        'Cache-Control': 'max-age=0',
+        'Connection': 'keep-alive',
+        'Origin': 'https://cosmo-miner.com',
+        'Referer': 'https://cosmo-miner.com/',
+        'Sec-Fetch-Dest': 'empty',
+        'Sec-Fetch-Mode': 'cors',
+        'Sec-Fetch-Site': 'cross-site',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36 Edg/128.0.0.0',
+        'sec-ch-ua': '"Chromium";v="128", "Not;A=Brand";v="24", "Microsoft Edge";v="128", "Microsoft Edge WebView2";v="128"',
+        'sec-ch-ua-mobile': '?0',
+        'sec-ch-ua-platform': '"Windows"'
+    }
+
+
 def get_info_spin(get_Token):
     url = "https://api.cosmo-miner.com/spin"
 
@@ -75,36 +92,34 @@ def spin(get_Token):
     else:
         print("Что-то пошло не так: ответ пустой.")
 
-def reklama():
+def reklamaGet():
 
-    url = "https://api.adsgram.ai/adv?blockId=306&tg_id=124&tg_platform=tdesktop&platform=Win32&language=ru&is_premium=true" # тут tg_id заменить на свой
+    url = "https://api.adsgram.ai/adv?blockId=306&tg_id=1249648420&tg_platform=tdesktop&platform=Win32&language=ru&is_premium=true" # тут tg_id заменить на свой
 
     payload = {}
-    headers = {
-        'Accept': '*/*',
-        'Accept-Language': 'ru,en;q=0.9,en-GB;q=0.8,en-US;q=0.7',
-        'Cache-Control': 'max-age=0',
-        'Connection': 'keep-alive',
-        'Origin': 'https://cosmo-miner.com',
-        'Referer': 'https://cosmo-miner.com/',
-        'Sec-Fetch-Dest': 'empty',
-        'Sec-Fetch-Mode': 'cors',
-        'Sec-Fetch-Site': 'cross-site',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36 Edg/128.0.0.0',
-        'sec-ch-ua': '"Chromium";v="128", "Not;A=Brand";v="24", "Microsoft Edge";v="128", "Microsoft Edge WebView2";v="128"',
-        'sec-ch-ua-mobile': '?0',
-        'sec-ch-ua-platform': '"Windows"'
-    }
 
-    response = requests.request("GET", url, headers=headers, data=payload)
+    response = requests.request("GET", url, headers=headersReklama, data=payload).json()
+    print(response)
+    return response
 
-    # print(response.text)
+def blockReklama():
+    dataRekl = reklamaGet()
+    payload = {}
 
+    render = dataRekl['banner']['trackings'][0]['value']
+    requests.request("GET", render, headers=headersReklama, data=payload).json()
+
+    time.sleep(3)
+    show = dataRekl['banner']['trackings'][1]['value']
+    requests.request("GET", show, headers=headersReklama, data=payload).json()
+
+    time.sleep(3)
+    reward = dataRekl['banner']['trackings'][3]['value']
+    requests.request("GET", reward, headers=headersReklama, data=payload).json()
 
 def spinRun():
     while True:
         token = tokenFefresh.get_Token()
-
         countSpin = get_info_spin(token)
         freeSpins = countSpin.get('freeSpins')
         adCombo = countSpin.get('adCombo')
@@ -124,7 +139,7 @@ def spinRun():
 
         # После ожидания проверяем количество оставшихся спинов
         if todaySpinsCount < maxSpins:
-            reklama() # тест автопроталкивание рекламы
+            blockReklama() # тест автопроталкивание рекламы
 
             print('Суточный лимит спинов осталось ', maxSpins - todaySpinsCount, )
             spins_to_perform = freeSpins + adCombo
