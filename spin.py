@@ -99,7 +99,7 @@ def reklamaGet():
     payload = {}
 
     response = requests.request("GET", url, headers=headersReklama, data=payload).json()
-    print(response)
+    # print(response)
     return response
 
 def blockReklama():
