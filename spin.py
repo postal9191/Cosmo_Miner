@@ -99,7 +99,7 @@ def reklamaGet():
     payload = {}
 
     response = requests.request("GET", url, headers=headersReklama, data=payload).json()
-    # print(response)
+    print(response)
     return response
 
 def blockReklama():
@@ -113,7 +113,7 @@ def blockReklama():
     show = dataRekl['banner']['trackings'][1]['value']
     requests.request("GET", show, headers=headersReklama, data=payload).json()
 
-    time.sleep(3)
+    time.sleep(16)
     reward = dataRekl['banner']['trackings'][3]['value']
     requests.request("GET", reward, headers=headersReklama, data=payload).json()
 
@@ -139,7 +139,6 @@ def spinRun():
 
         # После ожидания проверяем количество оставшихся спинов
         if todaySpinsCount < maxSpins:
-            blockReklama() # тест автопроталкивание рекламы
 
             print('Суточный лимит спинов осталось ', maxSpins - todaySpinsCount, )
             spins_to_perform = freeSpins + adCombo
@@ -157,6 +156,8 @@ def spinRun():
             wait_time = (next_day - current_time).total_seconds()
             print(f"Ждем до следующего дня: {wait_time} секунд для вращения спинов")
             time.sleep(wait_time)
+            blockReklama()  # тест автопроталкивание рекламы
+            spin(token)
 
 
 if __name__ == "__main__":
