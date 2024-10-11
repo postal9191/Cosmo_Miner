@@ -99,7 +99,7 @@ def reklamaGet():
     payload = {}
 
     response = requests.request("GET", url, headers=headersReklama, data=payload).json()
-    print(response)
+    # print(response)
     return response
 
 def blockReklama():
@@ -107,15 +107,19 @@ def blockReklama():
     payload = {}
 
     render = dataRekl['banner']['trackings'][0]['value']
-    requests.request("GET", render, headers=headersReklama, data=payload).json()
+    one = requests.request("GET", render, headers=headersReklama, data=payload).json()
+    # print(one)
 
     time.sleep(3)
     show = dataRekl['banner']['trackings'][1]['value']
-    requests.request("GET", show, headers=headersReklama, data=payload).json()
+    two = requests.request("GET", show, headers=headersReklama, data=payload).json()
+    # print(two)
 
     time.sleep(16)
     reward = dataRekl['banner']['trackings'][3]['value']
-    requests.request("GET", reward, headers=headersReklama, data=payload).json()
+    three = requests.request("GET", reward, headers=headersReklama, data=payload).json()
+    # print(three)
+    print('Крутанули рекламу')
 
 def spinRun():
     while True:
@@ -130,7 +134,7 @@ def spinRun():
         # Преобразуем lastSpinDate в объект datetime
         lastSpinDate = datetime.fromisoformat(lastSpinDate.replace('Z', '+00:00'))
         current_time = datetime.now(timezone.utc)
-        wait_time = int((lastSpinDate + timedelta(minutes=10) - current_time).total_seconds())
+        wait_time = int((lastSpinDate + timedelta(minutes=6) - current_time).total_seconds())
 
         # Проверяем, прошло ли больше 10 минут с последнего спина
         if wait_time > 0:
@@ -143,16 +147,19 @@ def spinRun():
             print('Суточный лимит спинов осталось ', maxSpins - todaySpinsCount, )
             spins_to_perform = freeSpins + adCombo
             if spins_to_perform == 0:
+                blockReklama()
+                spin(token)
                 print("Нет доступных спинов. Ожидание 30 минут перед перезапуском цикла.")
-                time.sleep(1800)  # 1800 секунд = 30 минут
+                time.sleep(600)  # 1800 секунд = 30 минут
                 continue
             print(f"Будем выполнять spin {spins_to_perform} раза с задержкой в 10 секунд")
             for _ in range(spins_to_perform):
+                blockReklama()
                 spin(token)
                 time.sleep(10)
         else:
             # Если сегодня уже потрачено максимальное количество спинов, ждем следующего дня
-            next_day = (current_time + timedelta(days=1)).replace(hour=0, minute=5, second=0, microsecond=0)
+            next_day = (current_time + timedelta(days=1)).replace(hour=3, minute=5, second=0, microsecond=0)
             wait_time = (next_day - current_time).total_seconds()
             print(f"Ждем до следующего дня: {wait_time} секунд для вращения спинов")
             time.sleep(wait_time)
