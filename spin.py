@@ -2,6 +2,7 @@ import time
 from datetime import datetime, timedelta, timezone
 
 import requests
+
 import tokenFefresh
 
 headersReklama = {
@@ -145,6 +146,19 @@ def spinRun():
         if todaySpinsCount < maxSpins:
 
             print('Суточный лимит спинов осталось ', maxSpins - todaySpinsCount, )
+
+            if freeSpins > 0:
+                for _ in range(freeSpins):
+                    spin(token)
+                    time.sleep(10)
+                    print(f"Будем выполнять spin {freeSpins} раза с задержкой в 10 секунд")
+
+            if adCombo > 0:
+                for _ in range(adCombo):
+                    spin(token)
+                    time.sleep(10)
+                    print(f"Будем выполнять spin {adCombo} раза с задержкой в 10 секунд")
+
             spins_to_perform = freeSpins + adCombo
             if spins_to_perform == 0:
                 blockReklama()
@@ -152,11 +166,7 @@ def spinRun():
                 print("Нет доступных спинов. Ожидание 30 минут перед перезапуском цикла.")
                 time.sleep(600)  # 1800 секунд = 30 минут
                 continue
-            print(f"Будем выполнять spin {spins_to_perform} раза с задержкой в 10 секунд")
-            for _ in range(spins_to_perform):
-                blockReklama()
-                spin(token)
-                time.sleep(10)
+
         else:
             # Если сегодня уже потрачено максимальное количество спинов, ждем следующего дня
             next_day = (current_time + timedelta(days=1)).replace(hour=3, minute=5, second=0, microsecond=0)
