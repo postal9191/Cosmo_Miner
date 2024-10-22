@@ -47,9 +47,12 @@ def get_info_spin(get_Token):
         'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36'
     }
 
-    response = requests.request("GET", url, headers=headers, data=payload).json()
-    # print(response) #debug
-    return response
+    try:
+        response = requests.request("GET", url, headers=headers, data=payload)
+        # print(response.text)
+        return response.json()
+    except Exception as e:
+        print(f"Произошла ошибка: {e}")
 
 
 def spin(get_Token):
@@ -126,6 +129,13 @@ def spinRun():
     while True:
         token = tokenFefresh.get_Token()
         countSpin = get_info_spin(token)
+
+        # Если countSpin None, ждем 1 минуту и перезапускаем цикл
+        if countSpin is None:
+            print("countSpin равен None. Ждем 1 минуту перед перезапуском цикла.")
+            time.sleep(60)
+            continue
+
         freeSpins = countSpin.get('freeSpins')
         adCombo = countSpin.get('adCombo')
         maxSpins = countSpin.get('maxSpins')
@@ -147,24 +157,21 @@ def spinRun():
 
             print('Суточный лимит спинов осталось ', maxSpins - todaySpinsCount, )
 
-            if freeSpins > 0:
-                for _ in range(freeSpins):
-                    spin(token)
-                    time.sleep(10)
-                    print(f"Будем выполнять spin {freeSpins} раза с задержкой в 10 секунд")
-
-            if adCombo > 0:
-                for _ in range(adCombo):
-                    spin(token)
-                    time.sleep(10)
-                    print(f"Будем выполнять spin {adCombo} раза с задержкой в 10 секунд")
 
             spins_to_perform = freeSpins + adCombo
+
+            if spins_to_perform > 0:
+                print(f"Будем выполнять spin {spins_to_perform} раза с задержкой в 10 секунд")
+                for _ in range(spins_to_perform):
+                    spin(token)
+                    time.sleep(10)
+
+
             if spins_to_perform == 0:
                 blockReklama()
                 spin(token)
-                print("Нет доступных спинов. Ожидание 30 минут перед перезапуском цикла.")
-                time.sleep(600)  # 1800 секунд = 30 минут
+                print("Нет доступных спинов. Ожидание 6 минут перед перезапуском цикла.")
+                time.sleep(360)  # 1800 секунд = 30 минут
                 continue
 
         else:

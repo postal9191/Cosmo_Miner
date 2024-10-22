@@ -1,7 +1,9 @@
 import json
 import time
-import simplejson
+
 import requests
+import simplejson
+
 
 def get_Token():
     # Загрузка данных из файла config.json
@@ -36,7 +38,7 @@ def get_Token():
         try:
             # Выполняем запрос POST
             response = requests.request("POST", url, headers=headers, data=payload)
-
+            # print(response.json())
             # Проверяем, является ли содержимое ответа корректным JSON
             if response.text:
                 try:
